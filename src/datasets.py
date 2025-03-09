@@ -1,17 +1,15 @@
 import os
 
-
 import matplotlib.pyplot as plt
 import numpy as np
-
 import torch
 import torchvision.transforms as transforms
 from loguru import logger
 from omegaconf import DictConfig
 from PIL import Image
 from torchvision.datasets.vision import VisionDataset
+
 from src.clients.mlflow_client import MLFlowClient
-from torchvision import transforms
 
 
 def set_normalization(settings):
@@ -146,9 +144,7 @@ class ImageDataset(VisionDataset):
                 images.append(os.path.join(self.root, self.stage, cls, img))
                 labels.append(self.classes.index(cls))
 
-
         return images, labels
-
 
     def compute_histogram(self):
         """
@@ -165,7 +161,7 @@ class ImageDataset(VisionDataset):
         plt.ylabel("Frequency")
 
         # Modify the x-axis to show the classes with better formatting
-        plt.xticks(np.arange(len(self.classes)), self.classes, rotation=45, ha='right')
+        plt.xticks(np.arange(len(self.classes)), self.classes, rotation=45, ha="right")
 
         # Add padding to prevent label cutoff
         plt.tight_layout()
@@ -211,13 +207,13 @@ class ImageDataset(VisionDataset):
             if predictions is not None:
                 # Color code the title based on whether prediction is correct
                 is_correct = label_names[idx] == pred_names[idx]
-                color = 'green' if is_correct else 'red'
-                title = f'GT: {label_names[idx]}\nPred: {pred_names[idx]}'
+                color = "green" if is_correct else "red"
+                title = f"GT: {label_names[idx]}\nPred: {pred_names[idx]}"
                 plt.title(title, color=color)
             else:
                 plt.title(label_names[idx])
 
-            plt.axis('off')  # Hide axes
+            plt.axis("off")  # Hide axes
 
         plt.tight_layout()
         self.mlflow_client.log_figure_mlflow(plt.gcf(), f"{self.stage}_{epoch}_sample_images.png", "sample_images")
@@ -232,7 +228,7 @@ class ImageDataset(VisionDataset):
             tuple: (image, target) where target is index of the target class.
         """
         img, target = self.images[idx], self.labels[idx]
-        
+
         # Check if image exists
         if not os.path.isfile(img):
             logger.error(f"Image not found: {img}")
@@ -246,4 +242,3 @@ class ImageDataset(VisionDataset):
 
         sample = {"images": img, "labels": target}
         return sample
-

@@ -9,3 +9,18 @@ docker-enter-container:
 
 run-mlflow-ui:
 	mlflow ui --host 0.0.0.0 --port 5000
+
+
+# Quality Checks
+flake8:
+	flake8 .
+isort-check:
+	isort --check-only .
+isort:
+	isort .
+black-check:
+	black --check .
+black:
+	black .
+quality-check: isort-check black-check flake8
+quality: isort black flake8

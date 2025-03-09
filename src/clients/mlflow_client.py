@@ -1,10 +1,13 @@
+import os
+
+import matplotlib.pyplot as plt
 import mlflow
 import torch
-from src.utils import AverageMeter
 from loguru import logger
 from omegaconf import DictConfig
-import matplotlib.pyplot as plt
-import os
+
+from src.utils import AverageMeter
+
 
 class MLFlowClient:
     """
@@ -99,7 +102,7 @@ class MLFlowClient:
                 if isinstance(sets, AverageMeter):
                     sets = sets.avg
                 self.log_metric_mlflow(metric_name, sets, step=epoch, decimals=decimals)
-    
+
     @staticmethod
     def log_artifacts(local_path: str, artifact_path: str = None, verbose: bool = True) -> None:
         """

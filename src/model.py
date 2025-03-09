@@ -61,7 +61,6 @@ class ResNet(nn.Module):
         # Add a softmax layer to output probabilities
         self.softmax = nn.Softmax(dim=1)
 
-
     def forward(self, x):
         """
         Forward pass of the ResNet class.
@@ -108,7 +107,6 @@ class Model(nn.Module):
         self.model = self.set_model()
         self.model = self.model.to(self.device)
 
-
     def set_model(self) -> nn.Module:
         try:
             logger.info(f"Initiating Model: {self.cfg.model.name}")
@@ -127,24 +125,12 @@ class Model(nn.Module):
         return self.model(x, **kwargs)
 
     def save_model(self, metrics, mlflow_client, max_metric, mode="accuracy"):
-        self.model.to('cpu')
+        self.model.to("cpu")
         if mode == "accuracy":
             if metrics["accuracy"]["val"].avg > max_metric:
                 logger.info(f"Accuracy {metrics['accuracy']['val'].avg:.3f}% > {max_metric:.3f}% saving model...")
                 mlflow_client.log_model_mlflow(self, "model")
                 max_metric = metrics["accuracy"]["val"].avg
-                logger.info("Model saved")
-        elif mode == "error":
-            if metrics["error"]["val"].avg < max_metric:
-                logger.info(f"Error {metrics['error']['val'].avg:.3f} < {max_metric:.3f} saving model...")
-                pipe_logger.mlflow_client.log_model_mlflow(self, "model")
-                max_metric = metrics["error"]["val"].avg
-                logger.info("Model saved")
-        elif mode == "loss":
-            if metrics["loss"]["val"].avg < max_metric:
-                logger.info(f"Loss {metrics['loss']['val'].avg:.3f} < {max_metric:.3f} saving model...")
-                pipe_logger.mlflow_client.log_model_mlflow(self, "model")
-                max_metric = metrics["loss"]["val"].avg
                 logger.info("Model saved")
         else:
             logger.error(f"Unknown mode: {mode} in save_model")

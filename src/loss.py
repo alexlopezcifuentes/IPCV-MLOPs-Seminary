@@ -24,15 +24,15 @@ class Loss(nn.Module):
         logger.info("Instantiating Loss")
         super().__init__()
         self.cfg = cfg
-        self.device = kwargs["device"]    
+        self.device = kwargs["device"]
 
         # Decode ignore_index
         self.ignore_index = kwargs["ignore_index"]
-        if self.ignore_index == 'None':
+        if self.ignore_index == "None":
             logger.info("Setting ignore_index to -100 so that none of the classes are ignored")
             self.ignore_index = -100
         # check if ignore_index is and integer
-        elif type(self.ignore_index) != int:
+        elif not isinstance(self.ignore_index, int):
             raise ValueError(f"ignore_index must be an integer, got {self.ignore_index}")
         else:
             self.ignore_index = int(self.ignore_index)
@@ -51,4 +51,4 @@ class Loss(nn.Module):
             raise KeyError(f"Unknown loss: {self.cfg.name}")
 
     def forward(self, x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
-        return self.loss(x, y)  
+        return self.loss(x, y)

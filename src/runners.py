@@ -1,14 +1,13 @@
-import os
+import random
 
-import numpy as np
 import torch
 import torchmetrics
-from src.utils import AverageMeter
 from loguru import logger
 from matplotlib import pyplot as plt
 from sklearn.metrics import ConfusionMatrixDisplay
 from torchmetrics.classification import Accuracy
-import random
+
+from src.utils import AverageMeter
 
 
 class ClassificationRunner:
@@ -217,14 +216,8 @@ class ClassificationRunner:
         cm = confmat(torch.tensor(predictions_list), torch.tensor(labels_list))
 
         plt.figure(figsize=(24, 20))  # Increase figure size
-        disp = ConfusionMatrixDisplay(
-            confusion_matrix=cm.numpy(),
-            display_labels=loader.dataset.classes
-        )
-        disp.plot(
-            xticks_rotation=45,  # Rotate x-axis labels 45 degrees
-            values_format='d'  # Show values as integers
-        )
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm.numpy(), display_labels=loader.dataset.classes)
+        disp.plot(xticks_rotation=45, values_format="d")  # Rotate x-axis labels 45 degrees  # Show values as integers
         plt.tight_layout()  # Adjust layout to prevent label cutoff
         self.mlflow_client.log_figure_mlflow(plt.gcf(), "confusion_matrix.png", "confusion_matrices")
         plt.close()

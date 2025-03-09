@@ -1,0 +1,13 @@
+[tool.black]
+line-length = 120
+skip_magic_trailing_comma = true
+
+[tool.isort]
+profile = "black"
+line_length = 120
+multi_line_output = 3
+include_trailing_comma = true
+
+[tool.flake8]
+max-line-length = 120
+exclude = [".git", "__pycache__", "build", "dist"]

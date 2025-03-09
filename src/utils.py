@@ -1,7 +1,3 @@
-import os
-import shutil
-from omegaconf import DictConfig
-from loguru import logger
 class AverageMeter(object):
     """Computes and stores the average and current value"""
 

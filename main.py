@@ -1,12 +1,13 @@
-import hydra
 import os
 
+import hydra
+
+from src.clients.mlflow_client import MLFlowClient
 from src.dataloader import Dataloader
-from src.model import Model
 from src.loss import Loss
+from src.model import Model
 from src.optimizer import Optimizer
 from src.runners import ClassificationRunner
-from src.clients.mlflow_client import MLFlowClient
 
 
 @hydra.main(version_base=None, config_path="config", config_name="config")
@@ -44,6 +45,7 @@ def main(cfg):
     runner.complete_train()
 
     return
+
 
 if __name__ == "__main__":
     main()

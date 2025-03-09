@@ -9,3 +9,7 @@ torchmetrics
 matplotlib
 psutil
 pynvml
+flake8
+flake8-pyproject
+isort
+black

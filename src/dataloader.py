@@ -2,11 +2,10 @@ from loguru import logger
 from omegaconf import DictConfig
 from torch.utils.data import DataLoader, Dataset
 
-from src.datasets import ImageDataset
 from src.clients.mlflow_client import MLFlowClient
-DATASETS = {
-    "cifar10": ImageDataset,
-}
+from src.datasets import ImageDataset
+
+DATASETS = {"cifar10": ImageDataset}
 
 
 class Dataloader(DataLoader):
@@ -20,7 +19,7 @@ class Dataloader(DataLoader):
 
         super().__init__(
             self.dataset,
-            batch_size=self.cfg.training.batch_size if self.stage == "train" else self.cfg.training.batch_size,
+            batch_size=(self.cfg.training.batch_size if self.stage == "train" else self.cfg.training.batch_size),
             shuffle=True if self.stage == "train" else False,
             num_workers=self.cfg.training.n_workers,
         )
