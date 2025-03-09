@@ -1,0 +1,20 @@
+# General Config
+comment: "First attempt"
+config_path: "config"
+experiment_name: "MLOPs Seminar"
+results_path: "results"
+
+defaults:
+  - dataset: cifar10
+  - model: alexnet
+  - optimizer: sgd
+  - optimizer/loss: cross_entropy
+  - optimizer/scheduler: step
+  - training: pc
+  - _self_
+
+# hydra:
+#   sweeper:
+#     params:
+#       model.name: resnet18, resnet34, resnet50
+#       optimizer.loss.label_smoothing: 0.0, 0.1, 0.2

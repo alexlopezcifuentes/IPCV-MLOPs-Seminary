@@ -1,0 +1,4 @@
+name: sgd
+lr: 0.01
+weight_decay: 2e-05
+momentum: 0.9

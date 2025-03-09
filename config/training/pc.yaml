@@ -1,0 +1,9 @@
+epochs: 5
+batch_size: 64
+n_workers: 14
+device: "cpu"
+gpu_id: 0
+seed: 42
+print_freq: 100
+results_path: "results"
+

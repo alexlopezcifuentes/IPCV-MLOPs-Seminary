@@ -71,3 +71,5 @@ python main.py
 ```
 
 En este punto deberíamos ver que el código empieza a entrenar.
+
+Una vez estemos entrenando el modelo deberemos ver que se crea un experimento en MLFlow y que nos sale el run de entrenamiento.

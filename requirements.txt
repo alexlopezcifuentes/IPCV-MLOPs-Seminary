@@ -1,0 +1,9 @@
+mlflow
+hydra-core
+torch
+torchvision
+numpy
+omegaconf
+loguru
+torchmetrics
+matplotlib

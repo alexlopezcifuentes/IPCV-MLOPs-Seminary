@@ -1,0 +1,8 @@
+datasets/
+results/
+mlruns/
+outputs/
+__pycache__/
+.DS_Store
+.env
+.venv

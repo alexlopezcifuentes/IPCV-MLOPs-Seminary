@@ -1,0 +1,17 @@
+name: cifar10
+dvc_version: v1.0.0
+path: null
+results_path: ${results_path}
+
+n_classes: 10
+unknown_index: 11
+
+input_size: [224, 224]
+transforms:
+  common:
+    to_tensor: True
+    normalization:
+      mean: [0.485, 0.456, 0.406]
+      std: [0.229, 0.224, 0.225]
+  train:
+    random_horizontal_flip: True
