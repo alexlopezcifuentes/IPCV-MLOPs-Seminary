@@ -7,3 +7,5 @@ omegaconf
 loguru
 torchmetrics
 matplotlib
+psutil
+pynvml
