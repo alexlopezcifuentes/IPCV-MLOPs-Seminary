@@ -43,14 +43,29 @@ Debemos de crear la imagen de Docker del seminario:
 make docker-build
 ```
 
-### 2. Ejecutar el contenedor
+### 2. Prerequisitos antes de Entrenar
+Necesitamos que el dataset se encuentre en la ruta `datasets`.
+Deberiamos de tener los siguientes ficheros y carpetas:
+
+```
+datasets/
+└── cifar10/
+    ├── train/         # Directorio con las imágenes de entrenamiento
+    ├── train.txt      # Archivo de metadatos para el entrenamiento
+    ├── val/           # Directorio con las imágenes de validación
+    └── val.txt        # Archivo de metadatos para la validación
+```
+
+Asegúrate de que la estructura del dataset coincida exactamente con la mostrada arriba para que el código funcione correctamente.
+
+### 3. Ejecutar el contenedor
 Una vez tenemos la imagen creada, crearemos el contenedor ejecutando en una terminal:
 ```bash
 make docker-run
 ```
 Esto creará el contenedor y nos introducirá dentro del mismo.
 
-### 3. Acceder al contenedor
+### 4. Acceder al contenedor
 Dado que necesitamos otra terminal con el contenedor, podremos ejecutar:
 ```bash
 make docker-enter-container
@@ -58,7 +73,7 @@ make docker-enter-container
 
 En este punto deberíamos de tener dos terminales corriendo dentro del contenedor de Docker.
 
-### 4. Ejecutar MLFlow y Entrenamiento
+### 5. Ejecutar MLFlow y Entrenamiento
 En una de las terminales haremos:
 ```bash
 make run-mlflow-ui
