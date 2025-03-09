@@ -63,7 +63,6 @@ class ImageDataset(VisionDataset):
         super().__init__(root="")
         self.cfg = cfg
         self.stage = stage
-        self.results_path = cfg.results_path
         self.mlflow_client = mlflow_client
         # Set root
         self.root = cfg.path

@@ -31,22 +31,3 @@ class AverageMeter(object):
         self.sum += val * n
         self.count += n
         self.avg = self.sum / self.count
-
-
-def init_results_path(cfg: DictConfig) -> str:
-    """
-    Initialize the results path.
-    """
-    results_path = os.path.join(cfg.results_path)
-
-    logger.info(f"Initializing results path: {results_path}")
-
-    # Check if the results path exists
-    if os.path.exists(results_path):
-        # If it exists, delete it
-        shutil.rmtree(results_path)
-
-    # Create the results path
-    os.makedirs(results_path, exist_ok=True)
-    
-    return results_path

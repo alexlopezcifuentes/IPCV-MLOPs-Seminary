@@ -7,16 +7,12 @@ from src.loss import Loss
 from src.optimizer import Optimizer
 from src.runners import ClassificationRunner
 from src.clients.mlflow_client import MLFlowClient
-from src.utils import init_results_path
 
 
 @hydra.main(version_base=None, config_path="config", config_name="config")
 def main(cfg):
     # Initialize MLFlow Client
     mlflow_client = MLFlowClient(cfg)
-
-    # Initialize results path to store results
-    results_path = init_results_path(cfg)
 
     # Download dataset from DVC repository.
     # dvc_manager.download_dvc_dataset(cfg.dataset.name, cfg.dataset.dvc_version)

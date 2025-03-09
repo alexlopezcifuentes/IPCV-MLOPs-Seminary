@@ -1,7 +1,6 @@
 name: cifar10
 dvc_version: v1.0.0
 path: null
-results_path: ${results_path}
 
 n_classes: 10
 unknown_index: 11

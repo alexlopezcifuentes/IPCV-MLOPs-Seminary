@@ -68,17 +68,12 @@ class ClassificationRunner:
             # Log Metrics
             self.mlflow_client.log_metrics_mlflow(self.metrics, epoch)
 
-            # Log results folder
-            self.mlflow_client.log_artifacts(self.cfg.training.results_path)
-
             # Save Model
             self.max_acc = self.model.save_model(self.metrics, self.mlflow_client, self.max_acc)
 
         # Complete Validation
         logger.info("Complete validation step...")
         self.complete_validation(self.test_loader)
-        # Log results folder
-        self.mlflow_client.log_artifacts(self.cfg.training.results_path)
         # Log Test Metrics
         self.mlflow_client.log_metrics_mlflow(self.metrics, epoch)
         logger.info("Finished Training")

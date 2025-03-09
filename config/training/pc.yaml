@@ -5,5 +5,4 @@ device: "cpu"
 gpu_id: 0
 seed: 42
 print_freq: 100
-results_path: "results"
 
