@@ -13,3 +13,5 @@ flake8
 flake8-pyproject
 isort
 black
+dvc[s3]
+platformdirs
