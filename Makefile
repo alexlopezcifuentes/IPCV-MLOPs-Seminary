@@ -2,7 +2,7 @@ docker-build:
 	# Build a Docker image
 	# -t mlops-seminary:latest    # Name and tag the image as 'mlops-seminary:latest'
 	# .                           # Use Dockerfile in current directory
-	docker build -t mlops-seminary:latest .
+	docker build -t alexlopezcifuentes/ipcv-mlops:latest .
 
 docker-run:
 	# Run a Docker container from the image
@@ -11,8 +11,8 @@ docker-run:
 	# --name mlops-seminary-container  # Name the running container
 	# -v "$(PWD):/app"           # Mount current directory to /app in container
 	# -p 5000:5000               # Map port 5000 of host to port 5000 of container
-	# mlops-seminary:latest      # Use the latest version of our image
-	docker run -it --rm --name mlops-seminary-container -v "$(PWD):/app" -p 5000:5000 mlops-seminary:latest
+	# alexlopezcifuentes/ipcv-mlops:latest      # Use the latest version of our image
+	docker run -it --rm --name mlops-seminary-container -v "$(PWD):/app" -p 5000:5000 alexlopezcifuentes/ipcv-mlops:latest
 
 docker-enter-container:
 	# Execute an interactive bash shell in a running container
