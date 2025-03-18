@@ -1,5 +1,4 @@
 name: cifar10
-dvc_version: v1.0.0
 path: null
 
 n_classes: 10

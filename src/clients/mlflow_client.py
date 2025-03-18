@@ -50,6 +50,12 @@ class MLFlowClient:
         for key, value in tags.items():
             mlflow.set_tag(key, value)
 
+    def log_param(self, key: str, value: str):
+        """
+        Log a parameter to MLFlow.
+        """
+        mlflow.log_param(key, value)
+
     def log_config_mlflow(self, config: DictConfig = None, parent_key: str = "") -> None:
         """
         Recursive function to log a Hydra configuration structure to MLFlow as parameters.
