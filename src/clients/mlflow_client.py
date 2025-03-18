@@ -23,14 +23,25 @@ class MLFlowClient:
         # Set MLFlow Experiment
         mlflow.set_experiment(self.cfg.experiment_name)
 
-        with mlflow.start_run() as run:
-            self.run = run
+        self.start_run()
 
-            # Fill MLFlow Tags
-            self.set_tags({"Comment": cfg.comment, "Dataset": cfg.dataset.name, "DVC Version": cfg.dataset.dvc_version})
+        # Fill MLFlow Tags
+        self.set_tags({"Dataset": cfg.dataset.name})
 
-            # Enable system metrics logging
-            mlflow.system_metrics.enable_system_metrics_logging()
+        # Enable system metrics logging
+        mlflow.system_metrics.enable_system_metrics_logging()
+
+    def start_run(self):
+        """
+        Start a new MLFlow run.
+        """
+        self.run = mlflow.start_run()
+
+    def end_run(self):
+        """
+        End the current MLFlow run.
+        """
+        mlflow.end_run()
 
     def set_tags(self, tags: dict):
         """

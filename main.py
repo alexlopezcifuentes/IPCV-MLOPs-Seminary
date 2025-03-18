@@ -15,9 +15,6 @@ def main(cfg):
     # Initialize MLFlow Client
     mlflow_client = MLFlowClient(cfg)
 
-    # Download dataset from DVC repository.
-    # dvc_manager.download_dvc_dataset(cfg.dataset.name, cfg.dataset.dvc_version)
-
     # Update dataset location
     # Create path key if it doesn't exist
     cfg.dataset.path = os.path.join("datasets", cfg.dataset.name)
@@ -43,6 +40,8 @@ def main(cfg):
 
     # Train
     runner.complete_train()
+
+    mlflow_client.end_run()
 
     return
 
