@@ -78,8 +78,27 @@ class ImageDataset(VisionDataset):
         # Compute histogram
         self.compute_histogram()
 
+        # Read dataset version
+        self.dvc_version = self.read_dvc_version()
+
+        # Log dataset version
+        self.mlflow_client.log_param("dataset.version", self.dvc_version)
+
     def __len__(self):
         return len(self.images)
+
+    def read_dvc_version(self):
+        """
+        Read dataset version from DVC. The version is stored in the dataset path in a version.txt file.
+        The file contains "version=1.0.0"
+        """
+        # Check if version.txt file exists if not return version null
+        if not os.path.exists(os.path.join(self.root, "version.txt")):
+            return None
+
+        # Read version.txt file
+        with open(os.path.join(self.root, "version.txt"), "r") as f:
+            return f.read().split("=")[1].strip()
 
     def set_transform(self) -> transforms.Compose:
         """
