@@ -40,9 +40,16 @@ For more examples and ideas, visit:
 
 </details>
 
+
 ## Ejecución del Proyecto
 
-Para facilitar la ejecución, todos los comandos necesarios están incluidos en el archivo `Makefile`. Esto permite ejecutar comandos complejos mediante atajos simples.
+Para facilitar la ejecución, todos los comandos necesarios están incluidos en el archivo `Makefile`. Esto permite ejecutar comandos complejos mediante atajos simples. Sin embargo, este repositorio incluye un fichero de ayuda con algunos de los comandos más utiles de Docker explicados. Se puede visualizar en [Docker Cheatsheet.](https://github.com/alexlopezcifuentes/IPCV-MLOPs-Seminary/blob/main/DockerCheatsheet.md)
+
+Las maquinas virtuales no vienen por defecto con `Make` instalado, para instalarlo deberemos de ejecutar:
+```bash
+sudo apt install build-essential
+```
+Nos pedira introducir una contraseña que es igual que el nombre de usuario de la maquina virtual.
 
 ### 1. Imagen de Docker
 
@@ -219,7 +226,7 @@ root@3f3f51185b33:/app# python main.py
 En MLFlow se creará automáticamente un experimento con la información de esta ejecución, que servirá como baseline para comparaciones posteriores.
 
 
-#### 5.3. Actualización del Dataset
+#### 5.3 Actualización del Dataset
 
 Para probar con la versión 2.0.0 del dataset, ejecuta:
 
@@ -236,3 +243,65 @@ python main.py
 ```
 
 Esto generará una nueva entrada en MLFlow que podrás comparar con el entrenamiento anterior.
+
+#### 5.4 Modificacion de Hyper-parametros
+Todos los hyper-parametros del entrenamiento se encuentran dentro de la carpeta `/config`. Estan organizados por categorias para facilitar su uso.
+
+En el código, estos hyper-parámetros se leen, en vez de utilizando los típicos argumentos de argparse, utilizando una librería llamada [Hydra](https://hydra.cc/docs/intro/). Hydra permite crear dinámicamente una configuración jerárquica mediante composición y modificarla a través de archivos de configuración y la línea de comandos.
+
+##### Seleccion de Ficheros de Configuracion
+En ciertas carpetas podremos comprobar que exite mas de un fichero de configuracion. Uno de los puntos fuertes de Hydra es poder tener diferentes configuraciones para la misma categoria.
+Por ejemplo dentro de  `/config/model` tenemos dos ficheros de configuracion para dos arquitecturas diferentes:
+AlexNet
+```yaml
+name: alexnet
+n_classes: ${dataset.n_classes}
+normalization: True
+```
+
+ResNet
+```yaml
+name: resnet18
+n_classes: ${dataset.n_classes}
+normalization: False
+```
+Usando Hydra podremos mantener sin problema configuraciones diferentes para cada una de las arquitecturas. Para seleccionar que arquitectura queremos usar tenemos dos formas:
+
+La primera sera ejecutar el siguiente comando:
+```bash
+python main.py model=resnet
+```
+
+La segunda será modificando los ficheros de configuracion usados por defecto. Esta informacion esta contenida en el fichero de configuracion `config/config.yaml`:
+
+
+
+##### Modificacion de Parametros Individuales
+
+Si modificamos uno de los ficheros, por ejemplo, `/config/training/pc.yaml` de:
+
+```yaml
+epochs: 5
+batch_size: 64
+n_workers: 14
+device: "cpu"
+gpu_id: 0
+seed: 42
+print_freq: 100
+```
+a 
+```yaml
+epochs: 25
+batch_size: 64
+n_workers: 14
+device: "cpu"
+gpu_id: 0
+seed: 42
+print_freq: 100
+```
+estaremos modificando el numero de epocas que entrenamos nuestro modelo.
+De la misma forma si en vez de modificar el fichero, ejecutamos
+```bash
+python main.py training.epochs=25
+```
+estaremos sobreescribiendo el valor por defecto y entrenando tambien 25 epocas.

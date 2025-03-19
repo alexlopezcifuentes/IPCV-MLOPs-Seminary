@@ -1,2 +1,3 @@
 name: resnet18
 n_classes: ${dataset.n_classes}
+normalization: False
