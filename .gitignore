@@ -1,6 +1,7 @@
 datasets/cifar10/
 results/
 mlruns/
+multirun/
 outputs/
 __pycache__/
 .DS_Store

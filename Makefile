@@ -4,6 +4,9 @@ docker-build:
 	# .                           # Use Dockerfile in current directory
 	docker build -t alexlopezcifuentes/ipcv-mlops:latest .
 
+docker-pull-image:
+	docker pull alexlopezcifuentes/ipcv-mlops:latest
+
 docker-run:
 	# Run a Docker container from the image
 	# -it                         # Interactive mode with terminal
