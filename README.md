@@ -75,7 +75,27 @@ For more examples and ideas, visit:
 
 To facilitate the execution of the different commands needed, these are included in the [Makefile](https://github.com/alexlopezcifuentes/IPCV-MLOPs-Seminary/blob/main/Makefile) file.
 
-`Makefile` files allow you to execute complex syntax commands using simple shortcuts. The virtual machines we are using do not come with `Make` installed by default. To install it, we should run:
+`Makefile` files allow you to execute complex syntax commands using simple shortcuts. The virtual machines we are should have make installed by default. We can check that by running:
+
+```bash
+make --version
+```
+
+We should see the following output:
+
+<details>
+<summary>Make Check Output</summary>
+```text
+GNU Make 4.3
+Built for x86_64-pc-linux-gnu
+Copyright (C) 1988-2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+```
+</details>
+
+In case it is not installed we should run:
 
 ```bash
 sudo apt install build-essential
