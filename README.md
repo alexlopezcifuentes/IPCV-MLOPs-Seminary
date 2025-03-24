@@ -4,6 +4,7 @@ This README file contains all the instructions to carry out the practical part o
 Machine Learning Operations.
 
 The document index is:
+
 1. Prerequisites
 2. Execution Environment Setup
    - Docker Installation Verification
@@ -25,12 +26,15 @@ The document index is:
 6. Contact
 
 ## Prerequisites
+
 Below is the only requirement needed to carry out the workshop:
+
 - Docker
 
 ## Execution Environment Setup
 
 ### Docker Installation Verification
+
 To verify that Docker is correctly installed, run:
 
 ```bash
@@ -72,9 +76,11 @@ For more examples and ideas, visit:
 To facilitate the execution of the different commands needed, these are included in the [Makefile](https://github.com/alexlopezcifuentes/IPCV-MLOPs-Seminary/blob/main/Makefile) file.
 
 `Makefile` files allow you to execute complex syntax commands using simple shortcuts. The virtual machines we are using do not come with `Make` installed by default. To install it, we should run:
+
 ```bash
 sudo apt install build-essential
 ```
+
 When using sudo, a password will be requested, which is the same as the virtual machine's username.
 
 ### Repository Cloning
@@ -84,6 +90,7 @@ To get the seminar code and have access to git functions, clone the repository b
 ```bash
 git clone https://github.com/alexlopezcifuentes/IPCV-MLOPs-Seminary.git
 ```
+
 > **Note**: It is important to clone the repository and not download it directly as a .zip from GitHub for everything to work correctly.
 
 ## Running Docker
@@ -94,6 +101,7 @@ As mentioned, this repository uses `make` commands. However, this repository inc
 In this workshop, due to computational and time limitations of virtual machines, we will use a created Docker image available on Docker Hub. The image can be found at [MLOPS-Docker-Image](https://hub.docker.com/repository/docker/alexlopezcifuentes/ipcv-mlops/general).
 
 You can download the image using:
+
 ```bash
 make docker-pull-image
 ```
@@ -136,6 +144,7 @@ make docker-run
 ```
 
 If the image is not available locally, Docker will automatically download it from Docker Hub. Once the contaner is created and you will access it. You should see an output like:
+
 <details>
 <summary>Example Output</summary>
 
@@ -154,12 +163,12 @@ root@2fe34d8b86f1:/app#
 
 </details>
 
-
 If we look closely at the `Makefile` that we are executing when we do `make docker-run`, we can observe the following argument:
 
 ```bash
 -v "$(PWD):/app"
 ```
+
 this means that we are mounting our `WD` (working directory), inside the `app` folder of the Docker container. This way, all the files we have in the repository folder are shared by both our local system and the Docker container.
 
 You can try creating a `test.txt` file from the virtual machine's file explorer and then do `ls` inside the Docker container, you'll see that it syncs immediately.
@@ -199,17 +208,16 @@ mlflow ui --host 0.0.0.0 --port 5000
 [2025-03-18 15:12:21 +0000] [60] [INFO] Booting worker with pid: 60
 [2025-03-18 15:12:21 +0000] [61] [INFO] Booting worker with pid: 61
 ```
+
 </details>
 
 You can access the web interface at [http://0.0.0.0:5000/](http://0.0.0.0:5000/) from the virtual machine's browser. You should see an interface like the following:
 
 ![MLFlow UI|width=50%](assets/mlflow_ui.png)
 
-
 After starting MLFlow, you can minimize **Terminal 1**, as we won't use it anymore.
 
 > **Note**: Just minimize the terminal, don't close it, as doing so will stop the MLFlow server and you won't be able to access it.
-
 
 ## Running Training
 
@@ -248,12 +256,12 @@ Applying changes                                                                
 A       cifar10/
 1 file added
 ```
-</details>
 
+</details>
 
 Once the download is complete, you should have the following file structure. You can view it from the virtual machine's file explorer. Remember that although we downloaded it from the Docker container, having the volume mounted automatically synchronizes it with our local file system:
 
-```
+```text
 datasets/
 └── cifar10/
     ├── train/         # Directory with training images
@@ -263,6 +271,7 @@ datasets/
 ```
 
 ### Model Training
+
 The repository has a simple training pipeline that you can
 To start training, run:
 
@@ -296,10 +305,10 @@ root@3f3f51185b33:/app# python main.py
 2025-03-18 15:16:09.065 | INFO     | src.runners:epoch_train:119 - [Epoch 1/5,     1/469]. Loss: 2.300. Accuracy: 0.125
 2025-03-18 15:16:10.790 | INFO     | src.runners:epoch_train:119 - [Epoch 1/5,   101/469]. Loss: 2.034. Accuracy: 0.243
 ```
+
 </details>
 
 In MLFlow, we will see how an experiment with the information from this execution will be automatically created. This model will serve as a baseline for later comparisons.
-
 
 ### Dataset Update
 
@@ -322,18 +331,19 @@ You will see that a new entry is generated in the same MLFlow experiment that yo
 
 ## Hydra Configuration Files
 
-
 We can run different trainings by modifying the hyperparameters. All hyperparameters are defined inside the `/config` folder. They are organized by categories to facilitate their use.
 
 In the code, these hyperparameters are read, instead of using typical argparse arguments, using a library called [Hydra](https://hydra.cc/docs/intro/). Hydra allows dynamically creating a hierarchical configuration through composition and modifying it through configuration files and the command line.
 
-
 ### Modifying Hyperparameters with Hydra
+
 #### Selecting Configuration Files
+
 In certain folders, we can see that there is more than one configuration file. One of the strengths of Hydra is being able to have different configurations for the same category.
 For example, inside `/config/model` we have two configuration files for two different architectures:
 
 AlexNet
+
 ```yaml
 name: alexnet
 n_classes: ${dataset.n_classes}
@@ -341,14 +351,17 @@ normalization: True
 ```
 
 ResNet
+
 ```yaml
 name: resnet18
 n_classes: ${dataset.n_classes}
 normalization: False
 ```
+
 Using Hydra, we can easily maintain different configurations for each of the architectures. To select which architecture we want to use, we have two ways:
 
 The first will be to run the following command:
+
 ```bash
 python main.py model=resnet
 ```
@@ -366,7 +379,6 @@ defaults:
   - _self_
 ```
 
-
 #### Modifying Individual Parameters
 
 If we modify one of the files, for example, `/config/training/pc.yaml` from:
@@ -380,7 +392,9 @@ gpu_id: 0
 seed: 42
 print_freq: 100
 ```
-to 
+
+to
+
 ```yaml
 epochs: 10
 batch_size: 64
@@ -390,11 +404,14 @@ gpu_id: 0
 seed: 42
 print_freq: 100
 ```
+
 we will be modifying the number of epochs we train our model.
 Similarly, if instead of modifying the file, we run
+
 ```bash
 python main.py training.epochs=10
 ```
+
 we will be overriding the default value and also training for 10 epochs.
 
 #### Automatic Execution of Multiple Runs
@@ -411,12 +428,15 @@ hydra:
 ```
 
 If additionally we run `main.py` using the `-m` argument:
+
 ```bash
 python main.py -m
 ```
+
 We will observe how 3 runs are automatically executed one after the other.
 
 If in addition to the number of epochs, we want to measure the impact of the learning rate, we can modify `config/config.yaml` as follows:
+
 ```yaml
 hydra:
   sweeper:
@@ -424,9 +444,11 @@ hydra:
       training.epochs: 5, 10, 25
       optimizer.lr: 0.001, 0.01, 0.1
 ```
+
 and when running `python main.py -m` we will see how we are automatically executing 9 runs. Each of these runs will have its own entry in MLFlow, greatly simplifying the search for optimal hyperparameters.
 
 We can even define sweepers over complete configurations or ranges.
+
 ```yaml
 hydra:
   sweeper:
@@ -438,8 +460,8 @@ hydra:
 
 > **Note**: This way of using sweepers is the manual form. Hydra has functionalities to integrate more complex algorithms for optimal hyperparameter search such as [Nevergrad](https://hydra.cc/docs/plugins/nevergrad_sweeper/) or [Optuna](https://hydra.cc/docs/plugins/optuna_sweeper/).
 
-
 ## Contact
-In case of any questions, you can send an email to alexlopezcifuentes.93@gmail.com
+
+In case of any questions, you can send an email to [alexlopezcifuentes.93@gmail.com](mailto:alexlopezcifuentes.93@gmail.com)
 
 Disclaimer: This code is protected by copyright and cannot be used or reproduced without the explicit consent of Alejandro López Cifuentes.
