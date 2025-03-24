@@ -8,6 +8,8 @@ from omegaconf import DictConfig
 
 from src.utils import AverageMeter
 
+import os
+os.environ["MLFLOW_ENABLE_SYSTEM_METRICS_LOGGING"] = "true"
 
 class MLFlowClient:
     """
