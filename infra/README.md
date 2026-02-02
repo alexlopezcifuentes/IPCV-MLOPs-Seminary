@@ -2,6 +2,8 @@
 
 This folder contains AWS infrastructure code (Terraform) and helper utilities for the seminar.
 
+This files just include the Infrastructure as Code receipe to build all the infra, but you will need to have a AWS Cloud account to run.
+
 ## Files
 
 - `main.tf`: defines the infrastructure (EC2 instances) and exposes the `ips_alumnos` output.
