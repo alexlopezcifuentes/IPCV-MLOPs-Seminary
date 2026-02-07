@@ -1,0 +1,14 @@
+# Directorios locales de Terraform (donde se bajan los plugins)
+.terraform/
+
+# Archivo de ESTADO (CRÍTICO: NO SUBIR ESTO)
+# Contiene la info real de tus máquinas, IPs y metadatos
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Archivos de variables con secretos (si usaras alguno)
+*.tfvars
+
+# Archivos de crash logs
+crash.log

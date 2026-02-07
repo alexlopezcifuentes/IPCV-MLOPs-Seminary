@@ -1,0 +1,21 @@
+[Unit]
+Description=MLFlow Tracking Server
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu
+
+# Usamos el ejecutable dentro del entorno virtual 'mlflow_env'
+# Apuntamos a tu bucket nuevo: s3://ipcv-mlops-mlflow/mlflow-artifacts/
+ExecStart=/home/ubuntu/mlflow_env/bin/mlflow server \
+    --host 127.0.0.1 \
+    --port 5000 \
+    --backend-store-uri sqlite:////home/ubuntu/mlflow.db \
+    --default-artifact-root s3://ipcv-mlops-mlflow/mlflow-artifacts/
+
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
