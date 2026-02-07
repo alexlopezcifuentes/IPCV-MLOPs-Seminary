@@ -68,7 +68,7 @@ class ClassificationRunner:
             self.mlflow_client.log_metrics_mlflow(self.metrics, epoch)
 
             # Save Model
-            self.max_acc = self.model.save_model(self.metrics, self.mlflow_client, self.max_acc)
+            self.max_acc = self.model.save_model(self.metrics, self.mlflow_client, self.max_acc, epoch=epoch)
 
         # Complete Validation
         logger.info("Complete validation step...")

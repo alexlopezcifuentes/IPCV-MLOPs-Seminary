@@ -124,12 +124,12 @@ class Model(nn.Module):
     def forward(self, x, **kwargs):
         return self.model(x, **kwargs)
 
-    def save_model(self, metrics, mlflow_client, max_metric, mode="accuracy"):
+    def save_model(self, metrics, mlflow_client, max_metric, mode="accuracy", epoch: int | None = None):
         self.model.to("cpu")
         if mode == "accuracy":
             if metrics["accuracy"]["val"].avg > max_metric:
                 logger.info(f"Accuracy {metrics['accuracy']['val'].avg:.3f}% > {max_metric:.3f}% saving model...")
-                mlflow_client.log_model_mlflow(self, "model")
+                mlflow_client.log_model_mlflow(self, "model", step=epoch)
                 max_metric = metrics["accuracy"]["val"].avg
                 logger.info("Model saved")
         else:
