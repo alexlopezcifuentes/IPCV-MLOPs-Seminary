@@ -16,3 +16,4 @@ isort
 black
 dvc[s3]
 platformdirs
+boto3
