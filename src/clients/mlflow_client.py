@@ -11,6 +11,8 @@ from src.utils import AverageMeter
 import os
 os.environ["MLFLOW_ENABLE_SYSTEM_METRICS_LOGGING"] = "true"
 
+MLFLOW_TRACKING_URI = "http://172.31.32.159"
+
 class MLFlowClient:
     """
     Implements an MLFlow Client to manage MLFlow logging and model management.
@@ -21,6 +23,9 @@ class MLFlowClient:
         Initialize the MLFlow Client in local mode.
         """
         self.cfg = cfg
+
+        # Configure remote MLflow tracking server (no explicit port).
+        mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 
         # Set MLFlow Experiment
         mlflow.set_experiment(self.cfg.experiment_name)
@@ -148,11 +153,18 @@ class MLFlowClient:
         mlflow.log_figure(figure, figure_name)
 
     @staticmethod
-    def log_model_mlflow(model: torch.nn.Module, model_name: str) -> None:
+    def log_model_mlflow(model: torch.nn.Module, model_name: str, step: int | None = None) -> None:
         """
         Logs a PyTorch model to MLFlow.
 
         :param model: PyTorch model to lo. It must be a subclass of nn.Module.
         :param model_name: Model name.
+        :param step: Optional training step (epoch) associated with the checkpoint.
         """
-        mlflow.pytorch.log_model(model, model_name, pip_requirements="requirements.txt")
+        if step is not None:
+            mlflow.log_metric("model_checkpoint_epoch", step, step=step)
+
+        try:
+            mlflow.pytorch.log_model(model, model_name, pip_requirements="requirements.txt", step=step)
+        except TypeError:
+            mlflow.pytorch.log_model(model, model_name, pip_requirements="requirements.txt")

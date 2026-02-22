@@ -1,3 +1,4 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
 mlflow
 hydra-core
 torch
@@ -7,11 +8,13 @@ omegaconf
 loguru
 torchmetrics
 matplotlib
+scikit-learn
 psutil
-pynvml
+dvc[s3]
+boto3
+
+# Linters
 flake8
 flake8-pyproject
 isort
 black
-dvc[s3]
-platformdirs

@@ -1,37 +1,48 @@
-# Workshop Machine Learning Operations (MLOPs)
+# The Lifecycle of AI: Moving from Research to Industry-Grade MLOps. Lab Session.
 
-This README file contains all the instructions to carry out the practical part of the workshop How to Train DL Models and Deploy Them at Scale:
-Machine Learning Operations.
+This README contains all instructions for the practical part of the workshop *The Lifecycle of AI: Moving from Research to Industry-Grade MLOps*.
 
-The document index is:
+<img src="assets/cover.png" alt="Cover" width="50%">
 
-1. Prerequisites
-2. Execution Environment Setup
-   - Docker Installation Verification
-   - Using Makefile
-   - Repository Cloning
-3. Running Docker
-   - Downloading the Docker Image
-   - Creating the Docker Container
-   - Accessing the Container
-4. Running MLFlow
-5. Running Training
-   - Dataset Download
-   - Model Training
-   - Dataset Update
-   - Modifying Hyperparameters with Hydra
-     - Selecting Configuration Files
-     - Modifying Individual Parameters
-     - Automatic Execution of Multiple Runs
-6. Contact
+Document Index:
+
+1. [Introduction](#introduction)
+2. [Prerequisites](#prerequisites)
+3. [Execution Environment Setup](#execution-environment-setup)
+   - [Connection to AWS Instances](#connection-to-aws-instances)
+   - [Docker Installation Verification](#docker-installation-verification)
+   - [Using the Makefile](#using-the-makefile)
+4. [Running Docker](#running-docker)
+   - [Building the Docker Image](#building-the-docker-image)
+   - [Creating the Docker Container](#creating-the-docker-container)
+5. [Browsing MLflow](#browsing-mlflow)
+6. [Running Training](#running-training)
+   - [Dataset Download](#dataset-download)
+   - [Model Training](#model-training)
+   - [Dataset Update](#dataset-update)
+7. [Hydra Configuration Files](#hydra-configuration-files)
+8. [Contact](#contact)
+
+## Introduction
+
+This file guides you through the lab session for the MLOps seminar. The primary objective is to get hands-on experience with some of the tools introduced during the theoretical lecture. Specifically, we will focus on managing dataset versions with DVC and tracking our training experiments using MLflow.
+
+We will start by running a set of predefined experiments so you can familiarize yourself with a standard MLOps workflow. Following this, you will transition into an exploratory training phase. Your main goal here will be to train the best possible model, leveraging MLflow to guide your development and compare different iterations.
 
 ## Prerequisites
 
-Below is the only requirement needed to carry out the workshop:
+Below are the only requirements to complete the workshop:
 
-- Docker
+- Visual Studio Code
+- VS Code Remote - SSH extension
 
 ## Execution Environment Setup
+
+### Connection to AWS Instances
+
+Instructions on how to connect to AWS instances can be found in the guidelines in Moodle.
+
+Please, make sure you are already connected to your assigned AWS instance before continuing.
 
 ### Docker Installation Verification
 
@@ -71,20 +82,21 @@ For more examples and ideas, visit:
 
 </details>
 
-### Using Makefile
+### Using the Makefile
 
-To facilitate the execution of the different commands needed, these are included in the [Makefile](https://github.com/alexlopezcifuentes/IPCV-MLOPs-Seminary/blob/main/Makefile) file.
+To simplify Docker command execution, the main commands are included in the [Makefile](https://github.com/alexlopezcifuentes/IPCV-MLOPs-Seminary/blob/main/Makefile).
 
-`Makefile` files allow you to execute complex syntax commands using simple shortcuts. The virtual machines we are should have make installed by default. We can check that by running:
+`Makefile`s let you run longer commands through simple shortcuts. The AWS instances used in this workshop should already have `make` installed. You can verify this by running:
 
 ```bash
 make --version
 ```
 
-We should see the following output:
+You should see output like this:
 
 <details>
 <summary>Make Check Output</summary>
+
 ```text
 GNU Make 4.3
 Built for x86_64-pc-linux-gnu
@@ -95,35 +107,19 @@ There is NO WARRANTY, to the extent permitted by law.
 ```
 </details>
 
-In case it is not installed we should run:
-
-```bash
-sudo apt install build-essential
-```
-
-When using sudo, a password will be requested, which is the same as the virtual machine's username.
-
-### Repository Cloning
-
-To get the seminar code and have access to git functions, clone the repository by running:
-
-```bash
-git clone https://github.com/alexlopezcifuentes/IPCV-MLOPs-Seminary.git
-```
-
-> **Note**: It is important to clone the repository and not download it directly as a .zip from GitHub for everything to work correctly.
 
 ## Running Docker
-As mentioned, this repository uses `make` commands. However, this repository includes a help file with some of the most useful Docker commands explained. You can view it in [Docker Cheatsheet.](https://github.com/alexlopezcifuentes/IPCV-MLOPs-Seminary/blob/main/DockerCheatsheet.md)
 
-### Downloading the Docker Image
+As mentioned, this repository uses `make` commands. A help file with useful Docker commands is also available in the [Docker Cheatsheet](https://github.com/alexlopezcifuentes/IPCV-MLOPs-Seminary/blob/main/DockerCheatsheet.md).
 
-In this workshop, due to computational and time limitations of virtual machines, we will use a created Docker image available on Docker Hub. The image can be found at [MLOPS-Docker-Image](https://hub.docker.com/repository/docker/alexlopezcifuentes/ipcv-mlops/general).
+### Building the Docker Image
 
-You can download the image using:
+As explained during the introduction, we do not want to run our code directly on the AWS instance operating system. It is more convenient to run everything inside a Docker container.
+
+To do so, first we need to build the Docker image using the recipe defined in the [Dockerfile](Dockerfile):
 
 ```bash
-make docker-pull-image
+make docker-build
 ```
 
 You will see the following output:
@@ -132,38 +128,51 @@ You will see the following output:
 <summary>Example Output</summary>
 
 ```text
-(SeminarioIPCV) (base) ➜  Seminario MLOPs git:(main) ✗ make docker-pull-image
-docker pull alexlopezcifuentes/ipcv-mlops:latest
-latest: Pulling from alexlopezcifuentes/ipcv-mlops
-6e909acdb790: Pull complete 
-a8053d65de8e: Pull complete 
-806331b0d260: Pull complete 
-ce054015c4fb: Pull complete 
-a2e2c0a43e8a: Pull complete 
-97b6d233f75c: Pull complete 
-290bd27e9691: Pull complete 
-d808312cb37f: Pull complete 
-a1565cad2848: Pull complete 
-Digest: sha256:235d16c65c3e50d0373ecc214c574de51f911fa7079a73e76a50f7e3a3d0cd3d
-Status: Downloaded newer image for alexlopezcifuentes/ipcv-mlops:latest
-docker.io/alexlopezcifuentes/ipcv-mlops:latest
+# Build a Docker image
+# -t mlops-seminary:latest    # Name and tag the image as 'mlops-seminary:latest'
+# .                           # Use Dockerfile in current directory
+docker build -t alexlopezcifuentes/ipcv-mlops:latest .
+[+] Building 1.0s (12/12) FINISHED                                                                                                                                                                                         docker:default
+ => [internal] load build definition from Dockerfile                                                                                                                                                                                      
+ => => transferring dockerfile: 545B                                                                                                                                                                                            
+ => [internal] load metadata for docker.io/library/python:3.10-slim                                                                                                                                                                                         
+ => [internal] load .dockerignore                                                                                                                                                                                    
+ => => transferring context: 72B                                                                                                                                                                                             
+ => [internal] load build context                                                                                                                                                                                         
+ => => transferring context: 38B                                                                                                                                                                                             
+ => [1/7] FROM docker.io/library/python:3.10-slim@sha256:f5d029fe39146b08200bcc73595795ac19b85997ad0e5001a02c7c32e8769efa                                                                                                                 
+ => => resolve docker.io/library/python:3.10-slim@sha256:f5d029fe39146b08200bcc73595795ac19b85997ad0e5001a02c7c32e8769efa                                                                                                                 
+ => CACHED [2/7] RUN apt-get update -y && apt-get upgrade -y && apt-get install -y build-essential ffmpeg libsm6 libxext6 git nano jq cmake libzbar0                                                                                                                                                                                        
+ => CACHED [3/7] RUN pip install uv                                                                                                                                                                                              
+ => CACHED [4/7] WORKDIR /app                                                                                                                                                                                             
+ => CACHED [5/7] COPY requirements.txt .                                                                                                                                                                                           
+ => CACHED [6/7] RUN uv pip install -r requirements.txt --system                                                                                                                                                                                        
+ => CACHED [7/7] RUN git config --global --add safe.directory /app                                                                                                                                                                                             
+ => exporting to image                                                                                                                                                                                           
+ => => exporting layers                                                                                                                                                                                          
+ => => exporting manifest sha256:0f25d7ef21aa1f57a7fad8b10f4712303da6a253599403576fe390fa019e283a                                                                                                                         
+ => => exporting config sha256:c4a6a08b3868eebd3e8b971a69051c63cc03eb78bf4c0d14dac16a783791593e                                                                                                                         
+ => => exporting attestation manifest sha256:747e8ce43de515b28b055fe2b33fbf698c895dc346949df9325e6f090f527287                                                                                                                         
+ => => exporting manifest list sha256:de8b8a01b35395974fb8725dc0a45ea943fd868a9974165bb2fd45eaecc548e9                                                                                                                         
+ => => unpacking to docker.io/alexlopezcifuentes/ipcv-mlops:latest        
+ => => naming to docker.io/alexlopezcifuentes/ipcv-mlops:latest
 ```
 
 </details>
 
-> **Note**: Due to virtual machine limitations, this process may take about 5 minutes. Once the Docker image is downloaded, we will have it permanently in our system, so if we need to using it again, there will be no need to download it.
+> **Note**: Due to compute limitations, this process may take about 2-3 minutes. Once the Docker image is built, it remains available on the system, so you do not need to build it again unless you change the image definition.
 
-> **Note 2**: Although it's not necessary to build the image, the repository includes the `Dockerfile` and the corresponding instruction in the `Makefile` so that you can examine/use it.
+> **Note**: We are using the `Makefile` as a shortcut for the underlying Docker commands. Take a minute to inspect the real commands in the [Makefile](Makefile).
 
 ### Creating the Docker Container
 
-To run the environment where we will work, create a Docker container with the provided image by running:
+Once the image is created, you can create a Docker container for your working environment by running:
 
 ```bash
 make docker-run
 ```
 
-If the image is not available locally, Docker will automatically download it from Docker Hub. Once the contaner is created and you will access it. You should see an output like:
+After the container is created, you will automatically enter it. You should see output like:
 
 <details>
 <summary>Example Output</summary>
@@ -183,85 +192,52 @@ root@2fe34d8b86f1:/app#
 
 </details>
 
+Up to this point, every command we run in the terminal is executed inside the Docker container. Remember: we connect from our local computers to AWS through SSH, and inside the AWS instance we run commands in a Docker container.
+
 If we look closely at the `Makefile` that we are executing when we do `make docker-run`, we can observe the following argument:
 
 ```bash
 -v "$(PWD):/app"
 ```
 
-this means that we are mounting our `WD` (working directory), inside the `app` folder of the Docker container. This way, all the files we have in the repository folder are shared by both our local system and the Docker container.
+This means we are mounting our working directory (`PWD`) inside the `/app` folder of the Docker container. This way, all files in the repository are shared between the AWS host and the Docker container.
 
-You can try creating a `test.txt` file from the virtual machine's file explorer and then do `ls` inside the Docker container, you'll see that it syncs immediately.
+You can test this by creating a `test.txt` file from the VSCode Explorer and then running `ls` inside the Docker container. You will see it synchronized immediately.
 
-### Accessing the Container
+> **Note**: Up to this point, every command we run in the terminal is executed inside the Docker container. Remember: we connect from our local computers to AWS through SSH, and inside the AWS instance we run commands in a Docker container. If the container breaks, you can simply delete it and recreate it. That's the magic.
 
-At this point, you should have a terminal inside the Docker container. For the seminar, you will need a second terminal within the same container. To open this second terminal, run the following command in a new terminal window:
 
-```bash
-make docker-enter-container
-```
+## Browsing MLflow
 
-Now you should have two terminals, which we will call **Terminal 1** and **Terminal 2**, running inside the Docker container.
+The MLflow server runs on a dedicated AWS instance hosted by Alex so everyone logs training runs to the same place and can compare results.
 
-## Running MLFlow
+You can access the web interface at [MLflow Server](http://35.181.155.85) from any browser. You should see an interface like this:
 
-In **Terminal 1**, we can start the MLFlow server and its interface by running:
-
-```bash
-make run-mlflow-ui
-```
-
-<details>
-<summary>Example Output</summary>
-
-```text
-root@3f3f51185b33:/app# make run-mlflow-ui
-# Run MLflow's tracking UI server
-# --host 0.0.0.0              # Make server accessible on all network interfaces
-# --port 5000                 # Set the port to 5000
-mlflow ui --host 0.0.0.0 --port 5000
-[2025-03-18 15:12:21 +0000] [57] [INFO] Starting gunicorn 23.0.0
-[2025-03-18 15:12:21 +0000] [57] [INFO] Listening at: http://0.0.0.0:5000 (57)
-[2025-03-18 15:12:21 +0000] [57] [INFO] Using worker: sync
-[2025-03-18 15:12:21 +0000] [58] [INFO] Booting worker with pid: 58
-[2025-03-18 15:12:21 +0000] [59] [INFO] Booting worker with pid: 59
-[2025-03-18 15:12:21 +0000] [60] [INFO] Booting worker with pid: 60
-[2025-03-18 15:12:21 +0000] [61] [INFO] Booting worker with pid: 61
-```
-
-</details>
-
-You can access the web interface at [http://0.0.0.0:5000/](http://0.0.0.0:5000/) from the virtual machine's browser. You should see an interface like the following:
-
-![MLFlow UI|width=50%](assets/mlflow_ui.png)
-
-After starting MLFlow, you can minimize **Terminal 1**, as we won't use it anymore.
-
-> **Note**: Just minimize the terminal, don't close it, as doing so will stop the MLFlow server and you won't be able to access it.
+<img src="assets/mlflow_ui.png" alt="MLflow UI" width="50%">
 
 ## Running Training
 
-From this point on, we will exclusively use **Terminal 2** for all the following commands.
+Now we move into the experimental part of the workshop. We have already set up the execution environment (AWS, Docker, and MLflow), so we can start running model training experiments.
 
 ### Dataset Download
 
-We will use DVC to manage and download the dataset we will use to train our model. This repository contains two tagged versions of the dataset:
+We will use DVC to manage and download the dataset used to train the model. This repository contains two tagged dataset versions:
 
-- `cifar10v1.0.0`: First version of CIFAR10 without images of some classes in the training set:
-- `cifar10v2.0.0`: Second version of CIFAR10 using the complete dataset.
+- `cifar10_v1.0.0`: First CIFAR-10 version, missing images from some classes in the training set.
+- `cifar10_v2.0.0`: Second CIFAR-10 version with the complete dataset.
 
-You can see the repository tags in [the tag listing](https://github.com/alexlopezcifuentes/IPCV-MLOPs-Seminary/tags). This is a key functionality that allows us to have correctly versioned datasets under the same repository.
+You can see repository tags in [the tag list](https://github.com/alexlopezcifuentes/IPCV-MLOPs-Seminary/tags). This is a key feature that lets us keep datasets versioned in the same repository.
 
 To download version `1.0.0`, run from the repository root:
 
 ```bash
 cd datasets
-git checkout cifar10_v1.0.0
-dvc pull cifar10
+git checkout cifar10_v1.0.0 -- cifar10.dvc
+dvc pull cifar10.dvc
 cd ..
 ```
 
-During the dataset download, we should see the following output:
+During the dataset download, you should see output like:
 
 <details>
 <summary>Example Output</summary>
@@ -279,7 +255,7 @@ A       cifar10/
 
 </details>
 
-Once the download is complete, you should have the following file structure. You can view it from the virtual machine's file explorer. Remember that although we downloaded it from the Docker container, having the volume mounted automatically synchronizes it with our local file system:
+Once the download is complete (about 4 minutes), you should have the following file structure. Even though you downloaded it from inside the Docker container, the mounted volume automatically synchronizes it with the AWS host file system. That means you can inspect the dataset from VS Code Explorer:
 
 ```text
 datasets/
@@ -292,14 +268,15 @@ datasets/
 
 ### Model Training
 
-The repository has a simple training pipeline that you can
-To start training, run:
+The repository includes a simple training pipeline. To start training, run:
 
 ```bash
-python main.py
+python main.py experiment_name='<YOUR_NAME>'
 ```
 
-You will see how the training process begins, showing the following output:
+Where `<YOUR_NAME>` can be something like `Alex Lopez`. This will be your MLflow experiment name. It is highly important that you always use the same name.
+
+You will see the training process begin with output like:
 
 <details>
 <summary>Example Output</summary>
@@ -328,160 +305,45 @@ root@3f3f51185b33:/app# python main.py
 
 </details>
 
-In MLFlow, we will see how an experiment with the information from this execution will be automatically created. This model will serve as a baseline for later comparisons.
+> **Note**: Given the available compute resources, training for 5 epochs takes about 4 minutes.
+
+In MLflow, an experiment run with the information from this execution will be created automatically. This model will serve as a baseline for later comparisons.
 
 ### Dataset Update
 
-Once we have trained our baseline, we will train with an updated version of our dataset. To download version 2.0.0 of the dataset, run from the repository root:
+Once the baseline is trained, we will train with an updated dataset version. To download dataset version `cifar10_v2.0.0`, run from the repository root:
 
 ```bash
 cd datasets
-git checkout cifar10_v2.0.0
-dvc pull cifar10
+git checkout cifar10_v2.0.0 -- cifar10.dvc
+dvc pull cifar10.dvc
 cd ..
 ```
 
-Once the new version is downloaded, you can start a new training with:
+In this case, download time will be much shorter because DVC knows that we already have some CIFAR images and it will only download the new ones from `2.0.0`. Once the new version is downloaded, you can start a new training run with:
 
 ```bash
-python main.py
+python main.py experiment_name='<YOUR_NAME>'
 ```
 
-You will see that a new entry is generated in the same MLFlow experiment that you can compare with the previous training.
+Remember to use the same `<YOUR_NAME>` as in the first training so the new run is logged under the same MLflow experiment.
+
+You will see that a new entry is generated that you can compare with the previous training.
 
 ## Hydra Configuration Files
 
-We can run different trainings by modifying the hyperparameters. All hyperparameters are defined inside the `/config` folder. They are organized by categories to facilitate their use.
-
-In the code, these hyperparameters are read, instead of using typical argparse arguments, using a library called [Hydra](https://hydra.cc/docs/intro/). Hydra allows dynamically creating a hierarchical configuration through composition and modifying it through configuration files and the command line.
-
-### Modifying Hyperparameters with Hydra
-
-#### Selecting Configuration Files
-
-In certain folders, we can see that there is more than one configuration file. One of the strengths of Hydra is being able to have different configurations for the same category.
-For example, inside `/config/model` we have two configuration files for two different architectures:
-
-AlexNet
-
-```yaml
-name: alexnet
-n_classes: ${dataset.n_classes}
-normalization: True
-```
-
-ResNet
-
-```yaml
-name: resnet18
-n_classes: ${dataset.n_classes}
-normalization: False
-```
-
-Using Hydra, we can easily maintain different configurations for each of the architectures. To select which architecture we want to use, we have two ways:
-
-The first will be to run the following command:
+When running this Python command:
 
 ```bash
-python main.py model=resnet
+python main.py experiment_name='<YOUR_NAME>'
 ```
 
-The second will be to modify the configuration files used by default. This information is contained in the configuration file `config/config.yaml`:
+We are using all the default configuration arguments set in the [Hydra config folder](https://github.com/alexlopezcifuentes/IPCV-MLOPs-Seminary/tree/main/config).
 
-```yaml
-defaults:
-  - dataset: cifar10
-  - model: alexnet
-  - optimizer: sgd
-  - optimizer/loss: cross_entropy
-  - optimizer/scheduler: step
-  - training: pc
-  - _self_
-```
-
-#### Modifying Individual Parameters
-
-If we modify one of the files, for example, `/config/training/pc.yaml` from:
-
-```yaml
-epochs: 5
-batch_size: 64
-n_workers: 14
-device: "cpu"
-gpu_id: 0
-seed: 42
-print_freq: 100
-```
-
-to
-
-```yaml
-epochs: 10
-batch_size: 64
-n_workers: 14
-device: "cpu"
-gpu_id: 0
-seed: 42
-print_freq: 100
-```
-
-we will be modifying the number of epochs we train our model.
-Similarly, if instead of modifying the file, we run
-
-```bash
-python main.py training.epochs=10
-```
-
-we will be overriding the default value and also training for 10 epochs.
-
-#### Automatic Execution of Multiple Runs
-
-One of the main advantages of Hydra over ArgParse arguments, besides the organization of configurations, is the possibility of automatically defining sweepers over hyperparameters.
-
-If one wants to evaluate the influence of the number of epochs 5, 10, 25, on the model's performance, we can train the model three times by modifying that parameter. However, Hydra gives us the possibility to modify our `config/config.yaml` file and add:
-
-```yaml
-hydra:
-  sweeper:
-    params:
-      training.epochs: 5, 10, 25
-```
-
-If additionally we run `main.py` using the `-m` argument:
-
-```bash
-python main.py -m
-```
-
-We will observe how 3 runs are automatically executed one after the other.
-
-If in addition to the number of epochs, we want to measure the impact of the learning rate, we can modify `config/config.yaml` as follows:
-
-```yaml
-hydra:
-  sweeper:
-    params:
-      training.epochs: 5, 10, 25
-      optimizer.lr: 0.001, 0.01, 0.1
-```
-
-and when running `python main.py -m` we will see how we are automatically executing 9 runs. Each of these runs will have its own entry in MLFlow, greatly simplifying the search for optimal hyperparameters.
-
-We can even define sweepers over complete configurations or ranges.
-
-```yaml
-hydra:
-  sweeper:
-    params:
-      model: alexnet, testnet
-      training.epochs: range(1,10)  
-      optimizer.lr: 0.001, 0.01, 0.1
-```
-
-> **Note**: This way of using sweepers is the manual form. Hydra has functionalities to integrate more complex algorithms for optimal hyperparameter search such as [Nevergrad](https://hydra.cc/docs/plugins/nevergrad_sweeper/) or [Optuna](https://hydra.cc/docs/plugins/optuna_sweeper/).
+Please go to the [Hydra config folder](https://github.com/alexlopezcifuentes/IPCV-MLOPs-Seminary/tree/main/config) to find detailed Hydra documentation on how to change hyperparameters, with examples.
 
 ## Contact
 
-In case of any questions, you can send an email to [alexlopezcifuentes.93@gmail.com](mailto:alexlopezcifuentes.93@gmail.com)
+If you have any questions, email [alexlopezcifuentes.93@gmail.com](mailto:alexlopezcifuentes.93@gmail.com) or [alex.lopez@xoople.com](mailto:alex.lopez@xoople.com).
 
 Disclaimer: This code is protected by copyright and cannot be used or reproduced without the explicit consent of Alejandro López Cifuentes.

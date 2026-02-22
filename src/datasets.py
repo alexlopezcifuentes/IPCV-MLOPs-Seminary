@@ -184,7 +184,7 @@ class ImageDataset(VisionDataset):
 
         # Add padding to prevent label cutoff
         plt.tight_layout()
-        self.mlflow_client.log_figure_mlflow(plt.gcf(), f"{self.stage}_histogram.png", "histograms")
+        self.mlflow_client.log_figure_mlflow(plt.gcf(), f"{self.stage}_histogram.png")
         plt.close()
 
     def plot_sample_images(self, images, labels, epoch, predictions=None):
