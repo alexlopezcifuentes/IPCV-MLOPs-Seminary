@@ -2,7 +2,7 @@
 
 This README contains all instructions for the practical part of the workshop *The Lifecycle of AI: Moving from Research to Industry-Grade MLOps*.
 
-<img src="assets/cover.png" alt="Cover" width="50%">
+<img src="assets/cover.png" alt="Cover">
 
 Document Index:
 
