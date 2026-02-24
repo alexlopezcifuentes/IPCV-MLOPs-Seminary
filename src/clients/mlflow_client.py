@@ -9,9 +9,14 @@ from omegaconf import DictConfig
 from src.utils import AverageMeter
 
 import os
+
 os.environ["MLFLOW_ENABLE_SYSTEM_METRICS_LOGGING"] = "true"
 
-MLFLOW_TRACKING_URI = "http://172.31.32.159"
+# Fallback: IP Privada de AWS. Se usa SOLO si no se inyecta la variable de entorno.
+DEFAULT_INTERNAL_URI = "http://172.31.32.159"
+
+# Intenta leer del entorno, si no existe o está vacía, usa la por defecto
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", DEFAULT_INTERNAL_URI)
 
 class MLFlowClient:
     """
