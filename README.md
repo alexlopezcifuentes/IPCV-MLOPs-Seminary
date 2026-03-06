@@ -211,7 +211,7 @@ You can test this by creating a `test.txt` file from the VSCode Explorer and the
 
 The MLflow server runs on a dedicated AWS instance hosted by Alex so everyone logs training runs to the same place and can compare results.
 
-You can access the web interface at [MLflow Server](http://13.38.57.60) from any browser. You should see an interface like this:
+You can access the web interface at [MLflow Server](http://35.180.225.107) from any browser. You should see an interface like this:
 
 <img src="assets/mlflow_ui.png" alt="MLflow UI" width="50%">
 
